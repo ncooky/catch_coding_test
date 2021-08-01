@@ -20,4 +20,4 @@ $ php bin/console order:export
 
 ```
 
-the output file would be exported to `var` folder and the name is 
+the output file would be export to `var/export`, and each file must be name with timestamp and file extension (.csv and .xml)
