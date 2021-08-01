@@ -12,7 +12,7 @@ Developer Details:
 after download this code, just run command below :
 
 ```
-$ cd readable_request
+$ cd catch_coding_test
 
 $ composer install
 
