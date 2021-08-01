@@ -15,4 +15,13 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+!/var/export
+/var/export/*
+!/var/export/csv
+/var/export/csv/*
+!var/export/csv/.gitkeep
+!/var/export/xml
+/var/export/xml/*
+!var/export/xml/.gitkeep
 *.csv
+*.xml

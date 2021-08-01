@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use AppBundle\Services\ExportCsvService;
+use AppBundle\Services\ExportXmlService;
+
 
 class AppHelloCommand extends ContainerAwareCommand
 {
@@ -67,5 +69,6 @@ class AppHelloCommand extends ContainerAwareCommand
         }
 
         ExportCsvService::build($orders);
+        ExportXmlService::build($orders);
     }
 }

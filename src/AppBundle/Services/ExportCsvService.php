@@ -6,7 +6,7 @@ class ExportCsvService
 {
     static function build($arr)
     {
-        $fp = fopen(__DIR__ . '/../../../var/export_order_' . date('YmdHis') . '.csv', 'a+');
+        $fp = fopen(__DIR__ . '/../../../var/export/csv/export_order_' . date('YmdHis') . '.csv', 'a+');
 
         // Header
         $row = array(

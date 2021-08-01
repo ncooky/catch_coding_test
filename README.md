@@ -19,3 +19,5 @@ $ composer install
 $ php bin/console order:export
 
 ```
+
+the output file would be exported to `var` folder and the name is 
