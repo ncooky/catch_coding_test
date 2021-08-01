@@ -6,10 +6,7 @@ class ExportXmlService
 {
     static function build($arr)
     {
-        // CREATING XML OBJECT
 
-        // "order_id", "order_datetime", "total_order_value", "average_unit_price",
-        // "distinct_unit_count", "total_units_count", "customer_state";
         $xml = "<export_order>";
 
         foreach ($arr as $data) {
@@ -29,9 +26,6 @@ class ExportXmlService
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($sxe->asXML());
-
-        echo $dom->saveXML();
-
         $dom->save(__DIR__ . '/../../../var/export/xml/export_order_' . date('YmdHis') . '.xml');
     }
 }
