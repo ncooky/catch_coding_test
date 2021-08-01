@@ -7,8 +7,10 @@ class ExportXmlService
     static function build($arr)
     {
 
+        // Header
         $xml = "<export_order>";
 
+        // fill the data to xml
         foreach ($arr as $data) {
             $xml .= '<order order_id="'.$data[0].'">';
             $xml .= '<order_datetime>' . $data[1] . '</order_datetime>';
@@ -21,11 +23,14 @@ class ExportXmlService
         }
         $xml .= "</export_order>";
 
+        // create XML structure
         $sxe = new \SimpleXMLElement($xml);
         $dom = new \DOMDocument('1,0');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($sxe->asXML());
+
+        // save it to export folder
         $dom->save(__DIR__ . '/../../../var/export/xml/export_order_' . date('YmdHis') . '.xml');
     }
 }
