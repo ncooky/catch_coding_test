@@ -5,8 +5,7 @@ namespace AppBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Geocoder\Query\GeocodeQuery;
-use Geocoder\Query\ReverseQuery;
+use AppBundle\Services\ExportCsvService;
 
 class AppHelloCommand extends ContainerAwareCommand
 {
@@ -14,36 +13,20 @@ class AppHelloCommand extends ContainerAwareCommand
     {
         $this
             ->setName('order:export')
-            ->setDescription('...');
+            ->setDescription('export an order data from cloud to csv formatted');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // $name = $input->getArgument('name');
-
-        // if ($input->getOption('option')) {
-        //     $name .= $input->getOption('option');
-        // }
-        $fp = fopen(__DIR__.'/../../../var/export_order_'.date('YmdHis').'.csv', 'a+');
-
-        // Header
-        $row = array(
-            "order_id", "order_datetime", "total_order_value", "average_unit_price",
-            "distinct_unit_count", "total_units_count", "customer_state"
-        );
-        fputcsv($fp, $row);
-
+        $orders = array();
         $file = fopen('https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl', 'r');
         while (!feof($file)) {
             $line = fgets($file);
             $row = array();
             $obj = json_decode($line);
-            $avg_price = 0;
             $cust_state = $obj->customer->shipping_address->state;
-            $total_order = 0;
-            $total_unit = 0;
-            $unique_unit = 0;
-            $unit_id = 0;
+            $avg_price = $total_order = $total_unit =  $unique_unit = $unit_id = 0;
+
             if (sizeof($obj->items) > 0) {
                 foreach ($obj->items as $item) {
                     $total_order += $item->quantity * $item->unit_price;
@@ -72,8 +55,6 @@ class AppHelloCommand extends ContainerAwareCommand
             }
 
             if ($total_order != 0) {
-                $export = $obj->order_id . ', "' . date("Y-m-d H:i:s", strtotime($obj->order_date)) . '", ' . $total_order . ', '  . $avg_price . ', ' . $unique_unit . ', ' . $total_unit . ', "' . ucwords(strtolower($cust_state)) . '"';
-                $output->writeln($export);
                 $row[] = $obj->order_id;
                 $row[] = date("Y-m-d H:i:s", strtotime($obj->order_date));
                 $row[] = number_format($total_order, 2, '.', '');
@@ -81,10 +62,10 @@ class AppHelloCommand extends ContainerAwareCommand
                 $row[] = $unique_unit;
                 $row[] = $total_unit;
                 $row[] = ucwords(strtolower($cust_state));
-                fputcsv($fp, $row);
+                array_push($orders, $row);
             }
         }
-        rewind($fp);
-        fclose($fp);
+
+        ExportCsvService::build($orders);
     }
 }
